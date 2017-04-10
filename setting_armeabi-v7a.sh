@@ -1,0 +1,8 @@
+ARCH="aarch64"
+CPU_FLAG="--cpu=armv7-a"
+ABI="armeabi-v7a"
+ADDI_CFLAGS="-DANDROID -mfpu=neon"
+ADDI_LDFLAGS=""
+COMPILED_VERSION="9"
+TOOLCHAIN_PLATFORM="arm-linux-androideabi-4.9"
+BIN_PREFIX="arm-linux-androideabi-"

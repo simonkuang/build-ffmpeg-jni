@@ -1,0 +1,8 @@
+unset ARCH
+unset CPU_FLAG
+unset ABI
+unset ADDI_CFLAGS
+unset ADDI_LDFLAGS
+unset COMPILED_VERSION
+unset TOOLCHAIN_PLATFORM
+unset BIN_PREFIX

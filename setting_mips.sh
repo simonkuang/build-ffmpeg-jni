@@ -1,0 +1,8 @@
+ARCH="mips"
+CPU_FLAG=""
+ABI="mips"
+ADDI_CFLAGS="-DANDROID"
+ADDI_LDFLAGS=""
+COMPILED_VERSION="9"
+TOOLCHAIN_PLATFORM="mipsel-linux-android-4.9"
+BIN_PREFIX="mipsel-linux-android-"
