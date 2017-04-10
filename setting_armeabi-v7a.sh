@@ -1,4 +1,4 @@
-ARCH="aarch64"
+ARCH="arm"
 CPU_FLAG="--cpu=armv7-a"
 ABI="armeabi-v7a"
 ADDI_CFLAGS="-DANDROID -mfpu=neon"
