@@ -37,7 +37,7 @@ function Build_() {
   fi
 
   # clear the build dir
-  find $CURRENT_DIR -maxdepth 1 | grep -v "^\.$" | grep -v "\/${SELF_DIR}$" | grep -v "android$" | grep -v "\.sh$" | xargs rm -rf
+  find $CURRENT_DIR -maxdepth 1 | grep -v "^\." | grep -v "\/${SELF_DIR}$" | grep -v "android$" | grep -v "\.sh$" | xargs rm -rf
 
   # diff between platforms
   OS=$(uname)
