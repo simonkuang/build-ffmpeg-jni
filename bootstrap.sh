@@ -179,6 +179,8 @@ function Build_() {
   make -j$CPU_NUM && \
   make install
 
+  cp config.h ${PREFIX}/config_$1.h
+
   if [[ $? -eq 0 ]]; then
     echo -e "${COLOR_GREEN}DONE. Finished build $1.${COLOR_NC}"
   else
@@ -194,3 +196,6 @@ for I in $ABIS; do
 done
 
 cd -
+
+# clean work
+find ${BUILD_DIR} -type l -delete
