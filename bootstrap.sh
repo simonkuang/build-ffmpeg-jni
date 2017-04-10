@@ -9,7 +9,8 @@ ABIS="armeabi armeabi-v7a mips x86"
 
 
 CURRENT_DIR=$(cd $(dirname ${BASH_SOURCE:-$0});pwd)
-SELF_DIR=$(basename $CURRENT_DIR)
+BUILD_DIR=${CURRENT_DIR}/build
+SELF_DIR=$(basename $CURRENT_DIR)  # for avoid delte itself
 COLOR_RED="\033[0;31m"
 COLOR_GREEN="\033[0;32m"
 COLOR_ORANGE="\033[0;33m"
@@ -37,7 +38,9 @@ function Build_() {
   fi
 
   # clear the build dir
-  find $CURRENT_DIR -maxdepth 1 | grep -v "^\." | grep -v "\/${SELF_DIR}$" | grep -v "android$" | grep -v "\.sh$" | xargs rm -rf
+  #find $CURRENT_DIR -maxdepth 1 | grep -v "\/${SELF_DIR}$" | grep -v "\.git" | grep -v "build$" | grep -v "android$" | grep -v "\.sh$"; exit
+  #find $CURRENT_DIR -maxdepth 1 | grep -v "\/${SELF_DIR}$" | grep -v "\.git" | grep -v "build$" | grep -v "android$" | grep -v "\.sh$" | xargs rm -rf
+  rm -rf ${BUILD_DIR}/*
 
   # diff between platforms
   OS=$(uname)
@@ -63,7 +66,7 @@ function Build_() {
   TOOLCHAIN=$NDK/toolchains/${TOOLCHAIN_PLATFORM}/prebuilt/${NDK_PLATFORM}
   CROSS_PREFIX=$TOOLCHAIN/bin/${BIN_PREFIX}
 
-  PREFIX=$(pwd)/android/$ABI
+  PREFIX=${CURRENT_DIR}/android/$ABI
 
   ADDI_CFLAGS+=" -I$SYSROOT/usr/include --sysroot=$SYSROOT"
   ADDI_LDFLAGS+=" --sysroot=$SYSROOT"
@@ -98,6 +101,43 @@ function Build_() {
   ENABLED_FILTERS="\
       --enable-filter=aecho \
       --enable-filter=equalizer"
+
+  echo -e "[`date +'%Y-%m-%d %H:%M:%S'`][ARCH:$1] $SRC_DIR/configure \
+      --prefix=$PREFIX \
+      --enable-shared \
+      --disable-static \
+      --disable-doc \
+      --disable-programs \
+      --disable-ffmpeg \
+      --disable-ffplay \
+      --disable-ffprobe \
+      --disable-ffserver \
+      --disable-symver \
+      --enable-avresample \
+      --enable-jni \
+      --enable-small \
+      --enable-neon \
+      $DISABLE_EVERYTHING \
+      $ENABLED_ENCODERS \
+      $ENABLED_DECODERS \
+      $ENABLED_HWACCELS \
+      $ENABLED_MUXERS \
+      $ENABLED_DEMUXERS \
+      $ENABLED_PARSERS \
+      $ENABLED_BSFS \
+      $ENABLED_PROTOCOLS \
+      $ENABLED_INDEVS \
+      $ENABLED_OUTDEVS \
+      $ENABLED_FILTERS \
+      --cross-prefix=${CROSS_PREFIX} \
+      --target-os=$TARGET_HOST \
+      --arch=$ARCH \
+      $CPU_FLAG \
+      --enable-cross-compile \
+      --sysroot=$SYSROOT \
+      --extra-cflags=\"-Os -fpic $ADDI_CFLAGS\" \
+      --extra-ldflags=\"$ADDI_LDFLAGS\" \
+      $ADDITIONAL_CONFIGURE_FLAG" >> ${CURRENT_DIR}/build.log
 
   $SRC_DIR/configure \
       --prefix=$PREFIX \
@@ -146,6 +186,11 @@ function Build_() {
   fi
 }
 
+mkdir -p ${BUILD_DIR}
+cd ${BUILD_DIR}
+
 for I in $ABIS; do
   Build_ $I
 done
+
+cd -
