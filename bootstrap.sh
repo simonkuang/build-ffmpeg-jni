@@ -203,12 +203,12 @@ function Build_() {
 
   # rebuild the directory for android ndk path structure
   [ -d ${OUTPUT}/src/main/jniLibs/$1 ] || mkdir -p ${OUTPUT}/src/main/jniLibs/$1
-  [ -d ${OUTPUT}/src/main/jni/include ] || mkdir -p ${OUTPUT}/src/main/jni/include
+  [ -d ${OUTPUT}/src/main/jni ] || mkdir -p ${OUTPUT}/src/main/jni
+  # copy shared library binary to jniLibs directory with arch
   cp -rf ${PREFIX}/lib/*.so ${OUTPUT}/src/main/jniLibs/$1/
-
   # retrive the header files for arm arch
   [ "$1" == "armeabi" ] && \
-      cp -rf ${PREFIX}/include/* ${OUTPUT}/src/main/jni/include/
+      cp -rf ${PREFIX}/include/* ${OUTPUT}/src/main/jni/
 }
 
 mkdir -p ${BUILD_DIR}
