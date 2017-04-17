@@ -66,7 +66,8 @@ function Build_() {
   TOOLCHAIN=$NDK/toolchains/${TOOLCHAIN_PLATFORM}/prebuilt/${NDK_PLATFORM}
   CROSS_PREFIX=$TOOLCHAIN/bin/${BIN_PREFIX}
 
-  PREFIX=${CURRENT_DIR}/android/$ABI
+  PREFIX=${CURRENT_DIR}/.android/$ABI
+  OUTPUT=${CURRENT_DIR}/ffmpeg_jni
 
   ADDI_CFLAGS+=" -I$SYSROOT/usr/include --sysroot=$SYSROOT"
   ADDI_LDFLAGS+=" --sysroot=$SYSROOT"
@@ -179,13 +180,25 @@ function Build_() {
   make -j$CPU_NUM && \
   make install
 
-  cp config.h ${PREFIX}/config_$1.h
-
   if [[ $? -eq 0 ]]; then
     echo -e "${COLOR_GREEN}DONE. Finished build $1.${COLOR_NC}"
   else
     echo -e "${COLOR_RED}[ERROR] Failed on building on arch $1.${COLOR_NC}"
+    return -1
   fi
+
+  # finish install
+  cp config.h ${PREFIX}/config_$1.h
+
+  # remove all the soft link
+  find ${PREFIX} -type l -delete
+
+  # rebuild the directory for android ndk path structure
+  [ -d ${OUTPUT}/src/main/jniLibs/$1 ] || mkdir -p ${OUTPUT}/src/main/jniLibs/$1
+  [ -d ${OUTPUT}/src/main/jni/include ] || mkdir -p ${OUTPUT}/src/main/jni/include
+  cp -rf ${PREFIX}/lib/*.so ${OUTPUT}/src/main/jniLibs/$1/
+  [ "$1" == "armeabi" ] && \
+      cp -rf ${PREFIX}/include/* ${OUTPUT}/src/main/jni/include/
 }
 
 mkdir -p ${BUILD_DIR}
@@ -198,4 +211,4 @@ done
 cd -
 
 # clean work
-find ${BUILD_DIR} -type l -delete
+#find ${BUILD_DIR} -type l -delete
