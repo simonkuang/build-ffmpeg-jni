@@ -6,6 +6,10 @@ NDK=$HOME/Library/Android/sdk/ndk-bundle
 NDK_PLATFORM="darwin-x86_64"
 #ABIS="armeabi armeabi-v7a arm64-v8a mips mips64 x86 x86_64"
 ABIS="armeabi armeabi-v7a mips x86"
+# TODO(simonkuang): settings for components here. like:
+# ENCODERS="aac aac_at pcm_s16le pcm_s16be"
+# MUXERS="adts adx aiff pcm_s16le pcm_s16be"
+# ...
 
 
 CURRENT_DIR=$(cd $(dirname ${BASH_SOURCE:-$0});pwd)
@@ -77,7 +81,8 @@ function Build_() {
   ENABLED_ENCODERS="\
       --enable-encoder=pcm_s16le \
       --enable-encoder=pcm_s16be \
-      --enable-encoder=aac"
+      --enable-encoder=aac \
+      --enable-encoder=aac_at"
   ENABLED_DECODERS="\
       --enable-decoder=mp3 \
       --enable-decoder=aac \
@@ -88,7 +93,10 @@ function Build_() {
   ENABLED_HWACCELS=""
   ENABLED_MUXERS="\
       --enable-muxer=pcm_s16be \
-      --enable-muxer=pcm_s16le"
+      --enable-muxer=pcm_s16le \
+      --enable-muxer=adts \
+      --enable-muxer=adx \
+      --enable-muxer=aiff"
   ENABLED_DEMUXERS=""
   ENABLED_PARSERS="\
       --enable-parser=aac \
@@ -197,6 +205,8 @@ function Build_() {
   [ -d ${OUTPUT}/src/main/jniLibs/$1 ] || mkdir -p ${OUTPUT}/src/main/jniLibs/$1
   [ -d ${OUTPUT}/src/main/jni/include ] || mkdir -p ${OUTPUT}/src/main/jni/include
   cp -rf ${PREFIX}/lib/*.so ${OUTPUT}/src/main/jniLibs/$1/
+
+  # retrive the header files for arm arch
   [ "$1" == "armeabi" ] && \
       cp -rf ${PREFIX}/include/* ${OUTPUT}/src/main/jni/include/
 }
