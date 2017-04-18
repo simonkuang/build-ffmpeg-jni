@@ -209,6 +209,8 @@ function Build_() {
   # retrive the header files for arm arch
   [ "$1" == "armeabi" ] && \
       cp -rf ${PREFIX}/include/* ${OUTPUT}/src/main/jni/
+
+  return 0
 }
 
 mkdir -p ${BUILD_DIR}
