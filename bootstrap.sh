@@ -108,6 +108,8 @@ function Build_() {
   ENABLED_INDEVS=""
   ENABLED_OUTDEVS=""
   ENABLED_FILTERS="\
+      --enable-filter=pan \
+      --enable-filter=amerge \
       --enable-filter=aecho \
       --enable-filter=equalizer"
 
